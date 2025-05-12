@@ -29,6 +29,13 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.language-toggle:hover {
+    background-color: #3a6a24;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* 欢迎语 */
@@ -102,6 +109,7 @@ h1 {
     border-radius: 4px;
     font-size: 18px;
     z-index: 100;
+    box-shadow: 0 4px 8px rgba(75, 129, 48, 0.3);
 }
 
 /* 错误提示 */
@@ -117,6 +125,58 @@ input[type="date"] {
     appearance: none;
     -webkit-appearance: none;
     padding: 12px;
+}
+
+/* 日期选择器内部样式 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+    color: black;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    color: black;
+}
+
+input[type="date"]::-webkit-datetime-edit-text {
+    color: black;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    color: black;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+    color: black;
+}
+
+/* 日期选择器弹出面板样式 */
+input[type="date"]::-webkit-datetime-picker {
+    background-color: white;
+}
+
+/* 选中日期的高亮颜色 */
+input[type="date"]::-webkit-calendar-picker-indicator:focus {
+    outline: 2px solid #4b8130;
+}
+
+/* 周末日期禁用状态 */
+.disabled-day {
+    background-color: #f5f5f5 !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-weekday-field:disabled,
+input[type="date"]::-webkit-inner-spin-button:disabled {
+    color: #999;
+    background-color: #f5f5f5;
 }
 
 /* 响应式设计 */

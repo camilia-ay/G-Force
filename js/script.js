@@ -1,7 +1,7 @@
 // 多语言内容
 const translations = {
     'zh-CN': {
-        welcome: '我是G Force Mel AI,很高兴见到你!',
+        welcome: 'Gforce Freight Mel 提货预约',
         name: '收货人姓名',
         phone: '联系电话',
         order: '订单号',
@@ -19,7 +19,7 @@ const translations = {
         ]
     },
     'en': {
-        welcome: 'I am G Force Mel AI, nice to meet you!',
+        welcome: 'Gforce Freight Mel pick up reservation',
         name: 'Recipient Name',
         phone: 'Phone Number',
         order: 'Order Number',
@@ -39,7 +39,7 @@ const translations = {
 };
 
 // 当前语言状态
-let currentLang = 'zh-CN';
+let currentLang = 'en';
 
 // DOM元素
 const languageToggle = document.getElementById('language-toggle');
@@ -51,15 +51,34 @@ const dateInput = document.getElementById('date');
 
 // 初始化页面
 document.addEventListener('DOMContentLoaded', function() {
-    // 设置日期选择器最小日期为今天
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
+    // 设置日期选择器，禁用今天和周末，且只能选择一个月内的日期
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const maxDate = new Date(today);
+    maxDate.setMonth(maxDate.getMonth() + 1);
+    
+    dateInput.setAttribute('min', tomorrow.toISOString().split('T')[0]);
+    dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
+    
+    // 简单有效的周末禁用
+    dateInput.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const day = selectedDate.getDay();
+        if (day === 0 || day === 6) { // 0是周日，6是周六
+            this.value = ''; // 清空选择
+            alert(currentLang === 'zh-CN' ? '只能选择工作日(周一至周五)' : 'Please select a weekday (Monday to Friday)');
+        }
+    });
     
     // 初始化时间选择器
     updateTimeSelect();
     
     // 初始化语言切换按钮
     updateLanguageToggle();
+    // 初始化语言
+    updateLanguage();
 });
 
 // 语言切换功能
@@ -180,6 +199,7 @@ function hideError(element) {
 }
 
 function showSuccessMessage() {
+    successMessage.textContent = translations[currentLang].success;
     successMessage.style.display = 'block';
 }
 
@@ -189,19 +209,17 @@ function hideSuccessMessage() {
 
 // 模拟发送邮件
 function sendEmail(formData) {
+    const data = new FormData();
+    data.append('accessKey', 'sf_hgdjhb56haaec52cfg44e81n');
+    data.append('name', formData.name);
+    data.append('phone', formData.phone);
+    data.append('order', formData.order);
+    data.append('date', formData.date);
+    data.append('time', formData.time);
+
     fetch('https://api.staticforms.xyz/submit', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            accessKey: 'sf_hgdjhb56haaec52cfg44e81n', 
-            name: formData.name,
-            phone: formData.phone,
-            order: formData.order,
-            date: formData.date,
-            time: formData.time
-        })
+        body: data
     })
     .then(response => {
         if (!response.ok) {
