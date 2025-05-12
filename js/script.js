@@ -189,31 +189,34 @@ function hideSuccessMessage() {
 
 // 模拟发送邮件
 function sendEmail(formData) {
-    const emailContent = `
-        预约详情:
-        姓名: ${formData.name}
-        电话: ${formData.phone}
-        订单号: ${formData.order}
-        取件日期: ${formData.date}
-        取件时段: ${formData.time}
-    `;
-    
-    // 在实际应用中，这里应该调用邮件发送API
-    console.log('发送邮件到: 387910581@qq.com');
-    console.log(emailContent);
-    
-    // 模拟发送(实际项目中需要替换为真实邮件发送逻辑)
-    fetch('https://api.example.com/send-email', {
+    fetch('https://api.staticforms.xyz/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            to: '387910581@qq.com',
-            subject: '新的预约请求',
-            text: emailContent
+            accessKey: 'sf_hgdjhb56haaec52cfg44e81n', 
+            name: formData.name,
+            phone: formData.phone,
+            order: formData.order,
+            date: formData.date,
+            time: formData.time
         })
-    }).catch(error => {
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('网络响应失败');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('邮件发送成功');
+        } else {
+            console.error('邮件发送失败:', data);
+        }
+    })
+    .catch(error => {
         console.error('邮件发送失败:', error);
     });
 }
